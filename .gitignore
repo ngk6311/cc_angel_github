@@ -1,0 +1,23 @@
+# Local credentials and environment files
+credentials.json
+*.credentials.json
+.env
+.env.*
+!.env.example
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python-generated files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local logs and editor settings
+*.log
+.vscode/
+.idea/
