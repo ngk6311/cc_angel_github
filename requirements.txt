@@ -1,0 +1,4 @@
+gspread
+loguru
+oauth2client
+pandas

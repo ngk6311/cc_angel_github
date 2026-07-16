@@ -1,0 +1,52 @@
+name: Run Angel
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Command received from LINE
+        required: false
+        default: run
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: run-angel
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install --requirement requirements.txt
+
+      - name: Create Google credentials
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        shell: bash
+        run: |
+          if [[ -z "$GOOGLE_CREDENTIALS_JSON" ]]; then
+            echo "GOOGLE_CREDENTIALS_JSON is not configured" >&2
+            exit 1
+          fi
+          printf '%s' "$GOOGLE_CREDENTIALS_JSON" > credentials.json
+          chmod 600 credentials.json
+
+      - name: Run Angel script
+        env:
+          LINE_COMMAND: ${{ inputs.command }}
+        run: python new_only.py
