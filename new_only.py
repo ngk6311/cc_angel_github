@@ -26,6 +26,10 @@ SHEET_LIST_NAME_COLUMN = 1
 MISSING_ANGEL_NAME_COLUMN = "W"
 MISSING_ANGEL_COUNT_COLUMN = "X"
 
+# 小天使名冊只使用 B、E、H、K、N、Q、T。
+# W:X 保留給未配對名單，Z:AA 之後可能包含陣列公式。
+ROSTER_ANGEL_COLUMN_INDICES = range(1, 20, 3)
+
 
 # ============================================================
 # 共用函式
@@ -485,7 +489,10 @@ def fill_angel_counts(
 
         # 0-based：
         # B欄索引1、E欄索引4、H欄索引7……
-        for col_idx in range(1, len(row), 3):
+        for col_idx in ROSTER_ANGEL_COLUMN_INDICES:
+            if col_idx >= len(row):
+                continue
+
             angel_name = normalize_name(row[col_idx])
 
             if not angel_name:
